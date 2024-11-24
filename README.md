@@ -1,11 +1,11 @@
 # Entendiendo C
-* Entender C es entender la memoria* 
+*Entender C es entender la memoria* 
 
-Este apunte es para cuando C ya te dió muchos golpes y no le agarrás, todavía, la vuelta. Por lo tanto no vamos a ver como hacer un while, importar una función o llamarla. Eso ya lo sabés. Este apunte te sirve si cuando aparece un puntero empezás a hacer agua, y a medida que lo combinás con estructuras más complejas  el tema empeora. 
+Este apunte es para cuando C ya te dió muchos golpes y no le agarrás, todavía, la vuelta. Por lo tanto no vamos a ver como hacer un while, importar una función o llamarla. Eso ya lo sabés. Este apunte te sirve si cuando aparece un puntero empezás a hacer agua, y a medida que lo combinás con estructuras más complejas el tema empeora. 
 
-Si estás en esa situación, tenés que recordar que C es un lenguaje que todo el tiempo tenés que tener en la cabeza como está y cómo funciona la memoria. Una vez que le agarres la mano a eso, ya C no te va a parecer el cuco que es ahora. 
+Si estás en esa situación, tenés que recordar que C es un lenguaje que todo el tiempo tenés que tener en la cabeza como está y cómo funciona la memoria. Al comprender eso C ya no te va a parecer el cuco que es ahora. 
 
-Cada ejemplo de este apunte tiene su propio main y funciones que podrían conflictuar, Por eso lo sejemplos estan en archivos xxx.c.borrame, de manera que al borrar la extensión ".borrame" queda disponible para su ejecución.
+Cada ejemplo de este apunte tiene su propio main y funciones que podrían conflictuar, Por eso los ejemplos estan en archivos xxx.c.borrame, de manera que al borrar la extensión ".borrame" queda disponible para su ejecución.
 
 el proyecto está hecho con eclipse.cpp usando gnu cross compiler. Si tenés otro IDE, otra arquitectura,
 no te preocupes. Simplemente copiá los ejemplos de los .c a tu propio proyecto y ejecutalos a medida
@@ -14,39 +14,40 @@ que lo necesites.
 
 ## Espacios de memoria
 
+Las variables y parámetros son cahitos de memoria.
+Están alojadas en un espacio que dependerá de como y dónde se defina.
+
 Hay varios espacios de memoria:
 - estática: donde se definen las variables globales y estáticas. Se reserva automáticamente al iniciar la  ejecución  del programa para cada variable definida
 - pila: Se va reservando mientras se hacen las distintas llamadas a las funciones que ejecuta el programa. Los parámetros y las variables locales a la función (auxiliares) viven aquí. cuanto termina la ejecución de la función esa memoria se libera
 - heap (dinámica): Es memoria que el programador pide y libera explícitamente según vaya necesitando. Útil para estructuras de datos (pilas, listas, colas, vectores dinámicos también)
 - código: Las instrucciones del programa compilado se carga en memoria cuando se ejecuta. Algunos literales también puede vivir en este espacio de memoria si es que el compilador así lo decidió. Generalmente el programador no necesita saber sobre este espacio de memoria cuando programa.
 
-El espacio de memoria en que viven depende de donde se define la variable.
 En los ejemplos iniciales dejarempos por fuera la memoria heap, la introduciremos más adelante.
 
-Ver en este ejemplo los comentarios que explican en que porción de memoria se encuentra cada cosa: [example_01.c](example_01.c.borrame)
-
+Ver en [example_01.c](example_01.c.borrame) los comentarios que explican en que porción de memoria se encuentra cada cosa: 
 
 ## Entendiendo las variables/parámetros
 
 En C, una variable siempre es un espacio de memoria con las siguientes características
 - Una dirección de memoria dondé comienza
-- Un tamaño en bytes que es definido por el tipo de la variable
+- Un tamaño en bytes que es definido por el tipo de la variable.
 
 La cantidad de bytes que ocupa cada tipo de dato podría depender de la arquitectura en la que se corre
-el programa, por ejemplo en algunas arquitecturas un int ocupa 4 bytes, mientras que en otras podría ocupar 8 bytes. Por eso se suele usar el operador sizeof que ayuda a determinar cuanto espacio ocupa una variable
+el programa, por ejemplo en algunas arquitecturas un int ocupa 4 bytes, mientras que en otras podría ocupar 2 bytes. 
+Por eso se suele usar el operador sizeof que ayuda a determinar cuanto espacio ocupa una variable.
 
 En el caso de las variables que son punteros, siempre tienen un tamaño de bytes fijo (4 u 8 bytes, según
 la arquitectura) pero saben el tipo de dato a las cosas que apuntan, y por consiguiente, el tamaño del
 valor apuntado.
 
 Con el operador `&` se puede obtener la dirección de memoria de una variable. 
-Las direcciones de memoria se pueden imprimir con printf usando %p 
-
+Las direcciones de memoria se pueden imprimir con printf usando %p. 
 
 El ejemplo [example_02.c](example_02.c) es una variante del ejemplo 1 en el cual muestra 
 las variables y sus direcciones en un momento dado.
 
-Esta es una ejecución en mi compitadora que es de 64bits:
+Esta es una ejecución en una compitadora de 64bits con linux:
 
 ```
 (pila->potencia) base dir: 0x7fffffffd70c valor 2 tamaño: 4
@@ -60,17 +61,18 @@ Esta es una ejecución en mi compitadora que es de 64bits:
 ```
 
 Notar que: 
-* Las direcciones se escriben en hexa porque es más cómodo (cada dos digitos hexadecimales hay un byte).
+* Las direcciones se escriben en hexadecimal porque es más cómodo (cada dos digitos hexadecimales hay un byte).
 * Se ven 6 bytes, pero en realidad en mi arquitectura una dirección tiene 8 bytes, en este caso los primeros dos bytes están en 0 y por eso no se ven.
 * El compilador suele acomodar las variables cercanas en memoria, por eso base y cantidad (que son globales)
 Estan pegadas una a la otra: hay 4 bytes de diferencia entre esas direcciones, que es el tamaño que ocupa un int en esta arquitectura.
+No se puede asumir que dos variables independinetes están contiguas.
 * Notar que las direcciones globales estan muy alejadas a las direcciones de pila, porque son sectores distintos. 
 * se ve como base global y base en la llamada de potencia (pila) tienen el mismo valor, pero son variables
 distintas, ya que sus direcciones son distintas. Lo mismo pasa con las i de main y potencia.
 * El espacio de pila para la llamada main y para la llamada de potencia son espacios distintos, desde uno no se puede ver el otro, pero sin embargo ambos estan pegaditos porque justo desde main se llamó a
 potencia. .
 
-Al correr el ejemplo pero con la cantidad en 2, pasa que hay dos llamadas a potencia. Vamos a ver que las direciones entre ambas llamadas son las mismas, pero eso se da porque en la primera llamada se reserva la memoria, al terminar se libera, y automáticamente se llama a la segunda, volivendo asignar en las proximas direcciones libres de la pila:
+Al correr el ejemplo pero con la cantidad en 2, pasa que hay dos llamadas a potencia. Vamos a ver que las direciones entre ambas llamadas son las mismas, pero eso se da porque en la primera llamada se reserva la memoria, al terminar se libera, y automáticamente se llama a la segunda, volivendo asignar en las proximas direcciones libres de la pila, que son casulamente las recién liberadas.
 
 ```
 (pila->potencia) base dir: 0x7fffffffd6ac valor 2 tamaño: 4
@@ -88,7 +90,7 @@ Al correr el ejemplo pero con la cantidad en 2, pasa que hay dos llamadas a pote
 (global)cantidad dir: 0x555555558014 valor: 2 tamaño: 4
 ```
 
-Pero en el [example_03.c](example_03.c.borrame), vamos a apilar varias llamadas de la misma función, para entender como se van asignando la memoria en la pila: se reserva al ingresar a la función, se devuelve al finalizar la ejecución del método: 
+Pero en el [example_03.c](example_03.c.borrame), vamos a apilar varias llamadas de la misma función, para entender como se va asignando la memoria en la pila: se reserva al ingresar a la función, se devuelve al finalizar la ejecución del método: 
 
 ```
 (pila->factorial(3)) numero dir: 0x7fffffffd72c valor 3 tamaño: 4
@@ -104,9 +106,14 @@ Este también es el motivo por el cual una llamada recursiva que no tenga una co
 
 ## Modelando
 
-Saber las variables tienen una dirección es fundamental a la hora de entender como funcionan C, pero como los valores se asignan en la ejecución, necesitamos una manera de pensar los programas siendo un poco independiente de las direcciones concretas. 
+Saber que las variables tienen una dirección es fundamental a la hora de entender como funcionan C, pero como los valores se asignan en la ejecución, necesitamos una manera de pensar los programas siendo  independientes de las direcciones concretas. 
 
-Yo recomiendo graficar un instante de la memoria con un gráfico en que se ve los espacios de memoria (estático, pila y heap), y hay una cajita por cada variable. Para estos programas simples quizás no aporte mucho, pero cuando veamos el tema de punteros y memoria dinámica puede ayudar mucho:
+Yo recomiendo graficar un instante de la memoria con un gráfico en que se ve:
+- los espacios de memoria (estático, pila y heap)
+- el nombre de cada variable al lado de una cajita que contendrá el valor.
+- Círculos que engloban las variables que están en la pila para cada llamada a función
+
+  Para estos programas simples quizás no aporte mucho, pero cuando veamos el tema de punteros y memoria dinámica se vuelve importante:
 
 ![potencia](image_01.png)
  
@@ -117,33 +124,35 @@ Yo recomiendo graficar un instante de la memoria con un gráfico en que se ve lo
 
 En general, los lenguajes de programación permiten dos tipos de pasaje: por valor
 y por referencia. Al programador le interesa saber esta diferencia porque pasar
-por valor significa que si la función llamada modifica el valor del parámetro, ese cambio solo es visible en el contexto de la llamada. Aquel contexto que hizo la llamada original no ve dicho cambio. 
+por valor significa que si la función llamada modifica el valor del parámetro ese cambio solo es visible en el contexto de la llamada. 
+Aquel contexto que hizo la llamada original mantiene el valor previo inalterable. 
+
 Por lo contrario, por referencia, si la función llamada modifica el valor entonces sí se ve el cambio por fuera.
 
 Por ejemplo:
 
 ```
 	void main() {
-	   int x = 1;
-	   b(x);
-	   printf("%d", x)
+		int x = 1;
+		b(x);
+		printf("%d", x)
 	}
-	
-    void b(int parameter) {
-        parameter++;
-    }
+
+	void b(int parameter) {
+        	parameter++;
+    	}
     
 ```
+
 Si el parametro es pasado por valor, el programa imprimiría 1 (no se ven los cambios que hizo b)
 mientras que si el pasaje fuera por referencia imprimiría 2 (se ve desde el main el cambio que sufrió
 x en el contexto de la llamada a b)
 
 
-Si pensamos en la memoria, pasar por valor significa que al invocar una función se define un nuevo espacio de memoria en el stack y se copia el valor allí. Entonces cualquier cambio ocurre en esa porción que sólo
-vive mientras la función es llamada. al terminar la ejecución ese espacio se libera. Ésto es lo que vimos 
-que pasa con el parámetro "base" en el ejemplo 1. Si bien en dicho ejemplo no modificamos el valor, al 
+Si pensamos en la memoria, pasar por valor significa que al invocar una función se define un nuevo espacio de memoria en el stack y se copia el valor allí. 
+Entonces cualquier cambio ocurre en esa porción que sólo vive mientras la función es llamada. Al terminar la ejecución ese espacio se libera. 
+Ésto es lo que vimos que pasa con el parámetro "base" en el ejemplo 1. Si bien en dicho ejemplo no modificamos el valor, al 
 revisar las direcciones de memoria vemos que son espacios separados. Modificar uno no afecta a la otra.
-
 
 Mientras que una llamada por referencia, la función trabaja en el mismo espacio de memoria que fue pasado como argumento, no hay copia, si se modifica el valor del parámetro, también se modifica en el contexto
 externo. 
@@ -153,14 +162,14 @@ Hay muchas situaciones dónde se necesita un mecanismo similar al pasaje por ref
 
 Un puntero es una variable que almacena una dirección de memoria. Anteriormente imprimimos 
 la dirección de una variable utilizando el operador '&'. Si nosotros quisieramos almacenar ese
-valor en una variable necesitamos una variable que sea un puntero. En C un puntero sabe también 
+valor en una variable necesitamos que esa variable sea un puntero. En C un puntero sabe también 
 a que tipo de dato corresponde el dato almacenado en la dirección a la que apunta. Por eso, si quiero
-guardarme en una variable la dirección de memoria de una variable de tipo `int`, tengo que declarar 
-una variable que sea un `puntero a int`. El operador `*` se usa para dos cosas. Primero, para definir que una variable es en realidad un puntero: `int * p;` es la sentencia que declara el puntero a i.
-Luego, puedo asignarle un valor: `p = &miVariable`. Y luego, si yo quiero a través del puntero saber
+guardarme en una variable la dirección de memoria de otra variable de tipo `int`, tengo que declararla 
+como un `puntero a int`. El operador `*` se usa para dos cosas. Primero, para definir que una variable es en realidad un puntero: `int * p;` es la sentencia que declara el puntero a i.
+Luego, puedo asignarle un valor: `p = &miVariable`. Y finalmente, si yo quiero a través del puntero saber
 el contenido de lo que apunto, uso el asterisco nuevamente `*p` .
 
-La regla general es: `si p es &var, entonces *p es var` Se lee:  **si p es la dirección de var
+La regla general es: `si p == &var, entonces *p == var` Se lee:  **si p es la dirección de var
 entonces el contenido de p es var`**
 
 Veamos el [example_05.c](example_05.c.borrame)
@@ -174,7 +183,7 @@ la dirección de p es 0x7fffffffd6e0 (no suele interesar)
 Notar como llego al mismo valor tanto por la variable como por el puntero. Y que
 en definitiva el puntero es una variable más, que tiene un valor que puede ser modificado.
 
-El valor concreto no suele importar, lo que importa es que es la dirección donde se aleja alguna
+El valor concreto no suele importar, lo que importa es que es la dirección donde se aloja alguna
 variable. Por eso en el diagrama de modelado, no vamos a poner un valor, vamos a 
 dibujar una flecha.
 
@@ -205,7 +214,7 @@ Las operaciones que normalmente se hacen con el índice para iterar, por ejemplo
  Cuando a un puntero se le suma una unidad, suma en realidad a su contenido la cantidad
  de bytes asociada al tipo de lo que apunta. Es decir, si en un puntero a int,
  que está apuntando a la dirección 0x05, se le suma 1, el resultado es 0x09, ya 
- que el int tiene -en mi arquitectura- 2 bytes de tamanño. Pero si tengo un puntero
+ que el int tiene -en mi arquitectura- 4 bytes de tamanño. Pero si tengo un puntero
  a short apuntando a la misma dirección y le sumo 1, el resultado será 0x07, pues un short 
  tiene 2 bytes.
  
@@ -246,7 +255,7 @@ Notar que las funciones son equivalentes, y que las direcciones de los elementos
 son contiguas: van de 4 en cuatro porque se trata de un vector de enteros
 
 Otro tema interesante, es que la manera de pasar por parámetro un vector siempre
-es pasando un puntero al primer elemento, no hay manera pasar una copia de todos
+es pasando un puntero al primer elemento, no hay manera simple de pasar una copia de todos
 los elementos que vivan en el stack.
 
 Se puede modelar el vector como una tabla, agregar el índice si hace falta.
@@ -271,16 +280,19 @@ De cada persona se quiere guardar el nombre, el genero, la fecha de nacimiento
 y quien es su madre, que es otra persona. Esto genera una estructura anidada 
 que puede traer un poco de dolores de cabeza.
 
+
+
 La fecha de nacimiento también la modelamos como un struct que lo insertamos dentro
-de persona, pero en el caso de la madre, no hay manera de insertar todos los datos
+de persona.
+En el caso de la madre, no hay manera de insertar todos los datos
 de la madre en la misma estructura, porque ésta tiene que conocer a su abuela, y 
 finalmente esa recursión no sería posible. 
 
 Entonces la estrategia es generar una estructura anidada con punteros, en la cual
 cada persona conoce a través de un puntero a su madre, y hay una persona de la cual
-se desconce su madre, entonces ese puntero queda apuntando a null.
+se desconoce su madre. Quien no conoce a su madre tendrá NULL como valor en su puntero a madre.
 
-En memoria quería así:
+Tener en cuenta que los campos de un structs están contiguos en memoria. Quedaría así:
 
 ```
 
@@ -295,7 +307,6 @@ Algunas consideraciones del ejemplo:
 - Muestra como usar la notación flecha `(p*)->campo` es igual a `p->campo`
 - recorre una estructura anidada con una función recursiva a través de punteros
 - Importante el chequeo de que la madre no sea NULL, porque si no accederías a una zona de memoria que no te pertenece, y se rompería
-
 
 ## Punteros, vectors y structs.
 
