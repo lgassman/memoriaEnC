@@ -44,7 +44,7 @@ valor apuntado.
 Con el operador `&` se puede obtener la dirección de memoria de una variable. 
 Las direcciones de memoria se pueden imprimir con printf usando %p. 
 
-El ejemplo [example_02.c](example_02.c) es una variante del ejemplo 1 en el cual muestra 
+El ejemplo [example_02.c](example_02.c.borrame) es una variante del ejemplo 1 en el cual muestra 
 las variables y sus direcciones en un momento dado.
 
 Esta es una ejecución en una compitadora de 64bits con linux:
