@@ -1,0 +1,113 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+//el typedef genera un alias, a partir de ahora da igual definir un tipo como `struct fecha` o `Fecha` siendo ésta última más simple de entender
+typedef struct fecha {
+	unsigned char dia;
+	unsigned char mes;
+	unsigned short anio;
+} Fecha;
+
+
+
+
+//Genero el alias de manera anticipada a la definicion del struct para poder usar el alisa en si mismo
+
+typedef struct persona Persona;
+struct persona {
+	char nombre[15];
+	Fecha nacimiento;
+	char genero;
+	Persona * madre;
+};
+//Acá sí o sí necesito usar un puntero, porque si fuera una persona enteraría en una recursión
+//la definición. No sabría cuanto tamaño ocupa una Persona, ya que incluiría a la madre,
+//la abuela, la bisabuela, etc. Siempre la definición de un struct
+// tiene que poder saber cuanto ocupa un registro de esos.
+// Un puntero a algo que aún no está definido (ya que aún no termina de definirse la persona
+// si se puede hacer ya que los punteros son de tamaño fijo
+
+
+
+void inicializarPersona(Persona * persona, Fecha nacimiento, char * nombre, char genero,  Persona * madre) {
+	(*persona).genero = genero; //El . tiene precedencia sobre *, por eso se necesitan los parentesis
+	(*persona).madre = madre; // En el puntero madre está la direccion de memoria de la madre (que está en el main), por eso asigno y listo
+	strcpy( (*persona).nombre, nombre ); //voy a copiar caracter a caracter del string que recibi por parametro, ya que no tengo garantia de que ese string siga viviendo luego de la llamada, porque no está en un area de memoria que perdure (vino como un literal creado en la llamada)
+	(*persona).nacimiento = nacimiento;
+}
+
+void inicializarPersonaFlecha(Persona * persona, Fecha nacimiento, char * nombre, char genero,  Persona * madre) {
+	//Como queda medio incomodo el uso de asteriscos con parentesis, hay una notacion flecha
+	//que lo simplifica: `(*puntero).campo` es lo mismo que `puntero->campo`
+
+	persona->genero = genero;
+	persona->madre = madre;
+	strcpy( persona->nombre, nombre );
+
+	 //Esta es otra manera de trabajar con memoria, podés copiar
+	//un cacho de memoria en otro, entonces acá estamos diciento
+	//que en la direccion donde está el nacimiento de la persona copie la cantidad
+	//exacta de bytes que ocupa una fecha que están en la dirección del parámetro nacimiento
+	memcpy( &persona->nacimiento, &nacimiento, sizeof(Fecha));
+}
+
+void imprimirFamilia(Persona * persona) {
+
+	printf("Nombre: %s, Genero: %c, Nacimiento: (%d/%d/%d)\n", persona->nombre, persona->genero, persona->nacimiento.dia, persona->nacimiento.mes, persona->nacimiento.anio);
+	if (persona->madre != NULL) {
+		imprimirFamilia(persona->madre);
+	}
+}
+
+
+
+
+int main(int argc, char **argv) {
+	
+	 Persona lina; //al declarar la variable ya asigna memoria en la pila
+	 Persona mirta;
+	 Persona leo;
+
+	 //aca inicializamos directamente con notacion de punto
+	 lina.nacimiento.dia = 11;
+	 lina.nacimiento.mes = 10;
+	 lina.nacimiento.anio = 1926;
+	 strcpy(lina.nombre, "Lina");
+	 lina.madre = NULL; //Siempre hay una que no conocemos, por eso NULL
+	 lina.genero = 'f';
+
+
+	 //aca en cambio vamos a inicializar con una funcion
+	 //como queremos que se altere la memoria en el contexto de main
+	 //pasamos un puntero a la persona inicializar.
+	 //también la madre debe ser un puntero a una persona lo que le pasemos
+	 //ya que si pasamos una Persona entera se haría una copia en otra
+	 //direccion de memoria, en el ámbito de la funcion inicializadora
+	 //al hacer la asginación, la madre quedaría apuntando a un área de memoria que luego
+	 //se libera dejando un grave problema que rompería el programa
+	 //la fecha en cambio, como solo contiene valores, podríamos elegir pasar un struct
+	 //fecha. Aunque para la función inicializadora quedaría más comodo pasar los valores
+	 //por separado, es interesante ver como se resuelve la copia de un struct
+
+	 Fecha nacimiento = { 24, 10, 1956};
+	 inicializarPersona(&mirta, nacimiento, "Mirta", 'f',  &lina);
+
+	 //puedo reutilizar nacimiento, ya que en mirta se copiaron los valores
+	 nacimiento.dia = 1;
+	 nacimiento.mes = 11;
+	 nacimiento.anio = 1980;
+	 inicializarPersonaFlecha(&leo, nacimiento, "Leo", 'm',  &mirta);
+
+	 //Acá como no voy a cambiar los datos, podría haber diseñado
+	 // una función que reciba a la persona y no a un puntero, haciendo
+	 //una copia, similar a como pasé nacimiento en las inicializaciones
+	 //Pero en general, tratano con estructuras complejas que modelan tus
+	 //datos de dominio, lo más simple es pasar el puntero para evitar
+	 //todas esas copias innecesarias.
+	 imprimirFamilia(&leo);
+
+}
+

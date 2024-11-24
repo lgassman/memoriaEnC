@@ -254,7 +254,7 @@ Notar en el dibujo que los valores reales están en la pila en el contexto de ma
 mientras que el vector que está en el contexto de la función inicializadora es
 un simple puntero  hacia ese espacio de memoria
 
-![vectores](image_06.png)
+![vectores](image_05.png)
 
 ## Punteros y strings.
 
@@ -266,19 +266,90 @@ string que no se usan, ya que el último caracter válido viene antes de `\0`
 
 ## Punteros y structs.
 
+El ejemplo [example_08.c](example_08.c.borrame) presenta un struct algo complejo.
+De cada persona se quiere guardar el nombre, el genero, la fecha de nacimiento
+y quien es su madre, que es otra persona. Esto genera una estructura anidada 
+que puede traer un poco de dolores de cabeza.
+
+La fecha de nacimiento también la modelamos como un struct que lo insertamos dentro
+de persona, pero en el caso de la madre, no hay manera de insertar todos los datos
+de la madre en la misma estructura, porque ésta tiene que conocer a su abuela, y 
+finalmente esa recursión no sería posible. 
+
+Entonces la estrategia es generar una estructura anidada con punteros, en la cual
+cada persona conoce a través de un puntero a su madre, y hay una persona de la cual
+se desconce su madre, entonces ese puntero queda apuntando a null.
+
+En memoria quería así:
+
+```
+
+| nombre (15 bytes) | nacimiento (4 bytes -struct fecha-) | genero (1 byte) | madre (8 bytes - puntero- )| 
+|                   | dia (1 b)|  mes (1 b) | anio (2 b)  |                 |                            |
+
+```
+
+![memoria](image_06.png)
+
+Algunas consideraciones del ejemplo:
+- Muestra como usar la notación flecha `(p*)->campo` es igual a `p->campo`
+- recorre una estructura anidada con una función recursiva a través de punteros
+- Importante el chequeo de que la madre no sea NULL, porque si no accederías a una zona de memoria que no te pertenece, y se rompería
+
 
 ## Punteros, vectors y structs.
+
+Hay principalmente dos modelos para combinar vectores y structs:
+
+1. Que el vector tenga en su interior el contenido completo de los structs, cada uno 
+a continuación.
+2. Que el vector tenga punteros a structs que están en otras zonas de la memoria
+
+El primero es quizás más simple, pero el segundo se volverá importante cuando trabajemos con
+memoria dinámica.
+
+En el [example_09.c](example_09.c.borrame) se ven estas dos variantes. Además hay otra estrategia para
+inicializar los structus: en lugar de pasar un puntero para que la función inicializadora
+modifique la memoria en el main, la función genera su propio struct en su espacio de memoria,
+inicializa los variables y lo devuelve. El devolver es una acción similar al pasaje por valor
+de los parametros: se realiza una copia de la memoria de aquello que se está devolviendo
+en donde sea que se esté invocando. la llamada:
+`leo = crearPersona("Leo",'m', 1,11,1980)` pone primero los datos en una estructura en
+el contexto de crear Persona, al devolverse se copia todos esos valores en la memoria
+que corresponde a la variable `leo` quedando dichos valores en el espacio de memoria
+de la llamada a main.
+
+
+![memoria](image_07.png)
  
 
 ## Memoria dinámica (heap)
 
+Finalmente llegamos a la memoria dinámica! el famoso heap.
+El manejo de punteros en la memoria dinámica es igual a todo lo que estuvimos trabajando 
+en los puntos anteriores. La diferencia es que la memoria dinámica se asigna
+a pedido del programador, y se debe devolver cuando éste ya no lo necesite.
+Es distinta a la memoria de pila, ya que esta se autogestiona: se asigna al llamar
+una función, se devuelve a terminar la llamada.
+Y es también distinta a la memoria estática, ya que esta una vez asignada no se devuelve.
 
-## Combinando Memoria dinámica con structs (heap)
+Veamos el ejemplo de las personas que conocen a su madre, pero en lugar de mantenerlas en
+la pila de main, la vamos a mantener en el heap. En el main solo necesitamos conocer a la persona
+que inicia la cadena:
+
+Las siguientes imágenes muestran el estado de la memoria luego de cada llamada de crear persona.
+Notar que en la memoria heap no hay nombres de variables asociados a las direcciones. Siempre
+accedemos a esos espacios a través de punteros
+
+![memoria_1](image_08.png)
+![memoria_2](image_09.png)
+![memoria_3](image_10.png)
 
 
-## Vectores dinámicos con structs (modelo 1)
 
-## Vectores dinámicos con structs (modelo 2)
+## Vectores dinámicos con structs 
+
+
  
  
  
