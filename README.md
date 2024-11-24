@@ -115,8 +115,13 @@ Yo recomiendo graficar un instante de la memoria con un gráfico en que se ve:
 
   Para estos programas simples quizás no aporte mucho, pero cuando veamos el tema de punteros y memoria dinámica se vuelve importante:
 
+### Ejemplo 1:
+
 ![potencia](image_01.png)
  
+
+#### Ejemplo 2
+
 ![potencia](image_02.png)
 
 
