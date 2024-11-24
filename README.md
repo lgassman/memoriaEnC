@@ -309,7 +309,7 @@ Tener en cuenta que los campos de un structs están contiguos en memoria. Quedar
 ![memoria](image_06.png)
 
 Algunas consideraciones del ejemplo:
-- Muestra como usar la notación flecha `(p*)->campo` es igual a `p->campo`
+- Muestra como usar la notación flecha `(p*).campo` es igual a `p->campo`
 - recorre una estructura anidada con una función recursiva a través de punteros
 - Importante el chequeo de que la madre no sea NULL, porque si no accederías a una zona de memoria que no te pertenece, y se rompería
 
