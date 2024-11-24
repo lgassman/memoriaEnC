@@ -1,0 +1,33 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+void incrementar(int * contador) {
+
+	*contador = *contador + 1;
+}
+
+int main(int argc, char **argv) {
+	
+	int var;
+	int * p;
+	
+	var = 5;
+	p = &var;
+	
+	incrementar(p);
+	
+	printf("El nuevo valor de var es %d\n", var);
+
+	// el siguiente programa es equivalente sin pasar por la variable auxiliar p
+	// El ejemplo lo dejo con la variable auxiliar porque
+	// me permite graficar mejor el proceso de copia del valor del puntero
+	// int var = 5;
+	// incrementar(&var);
+	// printf("El nuevo valor de var es %d\n", var);
+
+
+}
+

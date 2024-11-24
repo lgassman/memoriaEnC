@@ -1,0 +1,20 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+void iterar(char * p){
+	for (; *p != '\0'; p++) {
+		printf("%c\n",*p);
+	}
+}
+
+
+int main(int argc, char **argv) {
+	
+	 char saludo[] = "Hola, mundo!";
+	 iterar(saludo);
+
+}
+

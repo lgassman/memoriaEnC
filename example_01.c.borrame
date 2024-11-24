@@ -1,0 +1,31 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int base = 2; //memoria estatica
+int cantidad = 8; //memoria estatica
+
+int potencia(int base, int exponente) {
+	//cada vez que se llame esta función, base, exponente, i y aux se reservan en la memoria de pila.
+	// en el contexto de la llamada a potencia. Al terminar la ejecución se libera esa memoria.
+	// ojo que esta base no es el mismo espacio de memoria que la variable global, si bien por como está hecho
+	//el programa ambas tendrán el mismo valor, al llamar desde el main a este método se copia el valor del espacio estático a la pila
+	//en el contexto de ejecución de esta llamada a la función.
+
+    int i;
+    int aux = 1;
+    for (i = 0; i < exponente; i++) {
+        aux = aux * base;
+    }
+    return aux;
+}
+
+
+int main(int argc, char **argv) {
+	int i; //memoria de pila en el contexto de la llamada a main
+    for (i = 0; i < cantidad; i++) {
+    	printf("%d ^ %d = %d\n", base, i, potencia(base, i));
+    }
+
+    return 0;
+}

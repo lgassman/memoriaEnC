@@ -1,0 +1,24 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+int factorial(int numero) {
+
+    printf("(pila->factorial(%d)) numero dir: %p valor %d tamaño: %d\n", numero, &numero, numero, sizeof(numero));
+    if (numero == 0) {
+    	return 1;
+    }
+    else {
+    	return numero * factorial(numero -1);
+    }
+    
+}
+
+
+int main(int argc, char **argv) {
+    printf("factorial de 3: %i", factorial(3));
+
+    return 0;
+}

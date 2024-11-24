@@ -1,0 +1,37 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int base = 2; 
+int cantidad = 2; //cambie la cantidad para trabajar con un caso solo
+
+int potencia(int base, int exponente) {
+
+    int i;
+    int aux = 1;
+    for (i = 0; i < exponente; i++) {
+        aux = aux * base;
+    }
+    
+    printf("(pila->potencia) base dir: %p valor %d tamaño: %d\n", &base, base, sizeof(base));
+    printf("(pila->potencia) exponente dir: %p valor %d tamaño: %d\n", &exponente, exponente, sizeof(exponente));
+    printf("(pila->potencia) i dir: %p valor %d tamaño: %d\n", &i, i, sizeof(i));
+    printf("(pila->potencia) aux dir: %p valor %d tamaño: %d\n", &aux, aux, sizeof(aux));
+
+    return aux;
+}
+
+
+int main(int argc, char **argv) {
+	int i; 
+    for (i = 0; i < cantidad; i++) {
+    	printf("%d ^ %d = %d\n", base, i, potencia(base, i));
+    }
+
+    printf("(pila->main) i dir: %p valor: %d tamaño: %d\n", &i, i, sizeof(i));
+    printf("(global)base dir: %p valor: %d tamaño: %d\n", &base, base, sizeof(base));
+    printf("(global)cantidad dir: %p valor: %d tamaño: %d\n", &cantidad, cantidad, sizeof(cantidad));
+
+    return 0;
+}

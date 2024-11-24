@@ -1,0 +1,23 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+
+int main(int argc, char **argv) {
+	
+	int var;
+	int * p;
+	
+	var = 5;
+	p = &var;
+	
+	printf("la dirección de var es %p y su valor es %d\n", &var, var);
+	 
+	printf("el valor de p es %p y su contenido es %d\n", p, *p);
+	
+	printf("la dirección de p es %p (no suele interesar)\n", &p);
+			
+
+}

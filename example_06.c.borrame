@@ -1,0 +1,42 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+void inicializarVector(int vector[], int size, int valorInicial){
+	int i;
+	printf("=====Inicializando vector =====\n");
+	printf("el tamaño en bytes del parámetro es %d\n", sizeof(vector));
+	printf("Si imprimo a lo que apunta el vector da %p\n", vector);
+	printf("Que es lo mismo que la dirección del primer elemento: %p\n", &vector[0]);
+	for (i = 0; i < size; i++) {
+		vector[i] = valorInicial;
+		printf("la dirección del elemento actual es: %p  inicializado con: %d\n", &vector[i], vector[i]);
+	}
+}
+
+void inicializarVectorConPunteros(int * vector, int size, int valorInicial){
+	int * p;
+	printf("=====Inicializando vector con punteros =====\n");
+	printf("el tamaño en bytes del parámetro es %d\n", sizeof(vector));
+	printf("Si imprimo a lo que apunta el vector da %p\n", vector);
+
+	for (p = vector; p < vector + size; p++) {
+		*p = valorInicial;
+		printf("la dirección del elemento actual es: %p inicializado con: %d\n", p, *p);
+	}
+}
+
+
+int main(int argc, char **argv) {
+	
+	int vector[10]; //se genera un vector de 10 elementos
+
+	inicializarVector(vector, 10, 0);//
+	inicializarVectorConPunteros(vector, 10, 2);//
+	
+	
+
+}
+
