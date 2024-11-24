@@ -341,13 +341,55 @@ Las siguientes imágenes muestran el estado de la memoria luego de cada llamada 
 Notar que en la memoria heap no hay nombres de variables asociados a las direcciones. Siempre
 accedemos a esos espacios a través de punteros
 
+[example_09.c](example_09.c.borrame)
+
 ![memoria_1](image_08.png)
 ![memoria_2](image_09.png)
 ![memoria_3](image_10.png)
 
 
-
 ## Vectores dinámicos con structs 
+
+En lugar de malloc se puede utilizar realloc cuando se necesita asginar 
+memoria y luego redimensaionar ese espacio de memoria.
+Esto es especialmente util para utilizar con vectores, ya que el gran problema
+de los vectores es que se requiere un tamaño fijo para trabajar.
+Al combinarlo con realloc, podemos tener un tamaño variable. 
+
+Realloc busca un espacio disponible con el tamaño suficiente para el nuevo
+requerimiento de memoria  y copia los valores originales al nuevo espacio.
+
+Teniendo en cuenta eso, es conveniente para trabajar con vectores dinámicos el
+modelo en que se guardan punteros a sctructs y no todo el struct, ya que eso mantiene
+el vector más chico haciendo más simple las operaciones de realloc.
+
+El siguiente ejemplo muestra como agrandamos el vector cuando se llena.
+Maneja el concpeto de lote para no hacer el realloc en cada elemento
+
+[example_11.c](example_11.c.borrame)
+
+```
+reservando nuevos 3 elementos. Nueva direccion 0x5555555592a0
+Agregando a Lina
+Agregando a Mirta
+Agregando a Leo
+reservando nuevos 3 elementos. Nueva direccion 0x555555559730
+Agregando a Yesica
+Agregando a Elisa
+Agregando a Pablo
+reservando nuevos 3 elementos. Nueva direccion 0x5555555597b0
+Agregando a Daniel
+Nombre: Lina, Genero: f, Nacimiento: (11/10/926)
+Nombre: Mirta, Genero: f, Nacimiento: (24/10/1956)
+Nombre: Leo, Genero: m, Nacimiento: (1/11/1980)
+Nombre: Yesica, Genero: f, Nacimiento: (1/12/1984)
+Nombre: Elisa, Genero: f, Nacimiento: (13/12/1984)
+Nombre: Pablo, Genero: m, Nacimiento: (11/8/1978)
+Nombre: Daniel, Genero: m, Nacimiento: (16/2/1950)
+```
+
+En un instante dado la memoria se ve así:
+![memoria](image_11.png)
 
 
  

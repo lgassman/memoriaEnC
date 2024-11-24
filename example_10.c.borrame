@@ -32,6 +32,10 @@ Persona * crearPersona( char * nombre, char genero, unsigned char dia, unsigned 
 	// Esto se hace poniendo entre parentesis el tipo con el que queres ver eso que devuelve.
 	// En este caso se antepone`(Persona *)`a la llamada del malloc
 	Persona * persona = (Persona *) malloc(sizeof(Persona));
+	if (persona == NULL) {
+		printf("No hay memoria");
+		exit(1);
+	}
 
 	persona->genero = genero;
 	strcpy( persona->nombre, nombre );
