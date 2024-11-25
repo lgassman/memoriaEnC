@@ -357,7 +357,7 @@ Las siguientes imágenes muestran el estado de la memoria luego de cada llamada 
 Notar que en la memoria heap no hay nombres de variables asociados a las direcciones. Siempre
 accedemos a esos espacios a través de punteros
 
-[example_09.c](example_09.c.borrame)
+[example_10.c](example_10.c.borrame)
 
 ![memoria_1](image_08.png)
 ![memoria_2](image_09.png)
