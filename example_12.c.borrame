@@ -1,0 +1,96 @@
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+
+typedef struct fecha {
+	unsigned char dia;
+	unsigned char mes;
+	unsigned short anio;
+} Fecha;
+
+
+typedef struct persona Persona;
+struct persona {
+	char nombre[15];
+	Fecha nacimiento;
+	char genero;
+};
+
+
+
+Persona * vector = NULL;
+int lote = 3; //cada 3 nuevos elementos voy a asignar más elementos
+int elementos = 0; //No tengo elementos
+int reservado = 0; //aun no reserve nada
+
+
+
+
+void inicializarPersona(Persona * persona, char * nombre, char genero, unsigned char dia, unsigned char mes, unsigned short anio) {
+
+	persona->genero = genero;
+	strcpy( persona->nombre, nombre );
+	persona->nacimiento.dia = dia;
+	persona->nacimiento.mes = mes;
+	persona->nacimiento.anio = anio;
+}
+
+void agregarPersona(char * nombre, char genero, unsigned char dia, unsigned char mes, unsigned short anio) {
+
+	if (elementos == reservado) {
+		reservado = reservado + lote;
+		//la direccion de memoria del vector pudo cambiar
+		//por eso calloc devuelve la nueva direccion y tengo que reemplazar la anterior
+		vector = (Persona *)realloc(vector, sizeof(Persona) * reservado);
+		printf("reservando nuevos %d elementos. Nueva direccion %p\n", lote, vector );
+		if (vector == NULL) {
+			printf("Error en el calloc, no hay memoria\n");
+			exit(-1);
+		}
+
+	}
+	inicializarPersona(&vector[elementos], nombre, genero, dia, mes, anio);
+	printf("Agregando a %s\n", vector[elementos].nombre);
+	elementos++;
+
+}
+
+void imprimir(Persona * persona) {
+	printf("Nombre: %s, Genero: %c, Nacimiento: (%d/%d/%d)\n", persona->nombre, persona->genero, persona->nacimiento.dia, persona->nacimiento.mes, persona->nacimiento.anio);
+}
+
+void imprimirVector() {
+	int i;
+
+	for (i = 0;i<elementos;i++) {
+		imprimir(&vector[i]);
+	}
+}
+
+void liberarMemoria() {
+
+	free(vector); //despues de liberar los elementos, ahora libero el vector
+
+}
+
+
+int main(int argc, char **argv) {
+	
+	 agregarPersona( "Lina", 'f', 11,10,926);
+	 agregarPersona("Mirta", 'f', 24,10,1956);
+	 agregarPersona("Leo", 'm', 1,11,1980);
+	 agregarPersona( "Yesica", 'f', 1,12,1984);
+	 agregarPersona("Elisa", 'f', 13,12,1984);
+	 agregarPersona("Pablo", 'm', 11,8,1978);
+	 agregarPersona("Daniel", 'm', 16,2,1950);
+
+
+	 imprimirVector();
+
+	 liberarMemoria();
+
+
+}
+
